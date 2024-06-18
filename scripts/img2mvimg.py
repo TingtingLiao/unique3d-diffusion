@@ -7,16 +7,7 @@ from rembg import remove, new_session
 from unique3d_diffusion.model_zoo import build_model 
  
 
-providers = [
-    ('CUDAExecutionProvider', {
-        'device_id': 0,
-        'arena_extend_strategy': 'kSameAsRequested',
-        'gpu_mem_limit': 8 * 1024 * 1024 * 1024,
-        'cudnn_conv_algo_search': 'HEURISTIC',
-    })
-]
-
-session = new_session(providers=providers)
+ 
 
 def rgba_to_rgb(rgba: Image.Image, bkgd="WHITE"):
     new_image = Image.new("RGBA", rgba.size, bkgd)
@@ -65,21 +56,30 @@ def simple_preprocess(input_image, rembg_session=session, background_color=255):
     return input_image
 
 
-def run_mvprediction(input_image: Image.Image, remove_bg=True, guidance_scale=1.5, seed=1145):
+def run_mvprediction(trainer, pipeline, image_path: str, remove_bg=True, guidance_scale=1.5, seed=1145):
+    input_image = Image.open(image_path) 
     if input_image.mode == 'RGB' or np.array(input_image)[..., -1].mean() == 255.:
         # still do remove using rembg, since simple_preprocess requires RGBA image
         print("RGB image not RGBA! still remove bg!")
         remove_bg = True
 
     if remove_bg:
+        providers = [
+            ('CUDAExecutionProvider', {
+                'device_id': 0,
+                'arena_extend_strategy': 'kSameAsRequested',
+                'gpu_mem_limit': 8 * 1024 * 1024 * 1024,
+                'cudnn_conv_algo_search': 'HEURISTIC',
+            })
+        ] 
+        session = new_session(providers=providers) 
         input_image = remove(input_image, session=session)
 
     # make front_pil RGBA with white bg
     input_image = change_rgba_bg(input_image, "white")
     single_image = simple_preprocess(input_image)
 
-    generator = torch.Generator(device="cuda").manual_seed(int(seed)) if seed >= 0 else None
- 
+    generator = torch.Generator(device="cuda").manual_seed(int(seed)) if seed >= 0 else None 
     img = rgba_to_rgb(single_image) if single_image.mode == 'RGBA' else single_image
     rgb_pils = trainer.pipeline_forward(
         pipeline=pipeline,
@@ -93,19 +93,24 @@ def run_mvprediction(input_image: Image.Image, remove_bg=True, guidance_scale=1.
  
     return rgb_pils, single_image 
 
-
-checkpoint_path = "ckpt/img2mvimg/unet_state_dict.pth"
-trainer, pipeline = build_model("img2mvimg", checkpoint_path)
  
-input_image = Image.open("data/image.png")
-rgb_pils, single_image = run_mvprediction(input_image, remove_bg=True, guidance_scale=1.5, seed=1145)
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ckpt", type=str, default="ckpt/img2mvimg/unet_state_dict.pth", help="path to the checkpoint")
+    parser.add_argument("--img", type=str, default="data/image.png", help="path to the image")
+    args = parser.parse_args()
 
-# concate images
-width, height = rgb_pils[0].size  
-combined_image = Image.new('RGB', (width * len(rgb_pils), height))
-for i, img in enumerate(rgb_pils):
-    combined_image.paste(img, (i * width, 0))
+    # checkpoint_path = "ckpt/img2mvimg/unet_state_dict.pth"
+    trainer, pipeline = build_model("img2mvimg", args.ckpt) 
+    rgb_pils, single_image = run_mvprediction(trainer, pipeline, args.img, remove_bg=True, guidance_scale=1.5, seed=1145)
 
-combined_image.save("output.png")
+    # concate images
+    width, height = rgb_pils[0].size  
+    combined_image = Image.new('RGB', (width * len(rgb_pils), height))
+    for i, img in enumerate(rgb_pils):
+        combined_image.paste(img, (i * width, 0))
+
+    combined_image.save("output.png")
    
  
