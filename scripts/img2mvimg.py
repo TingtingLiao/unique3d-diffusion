@@ -94,10 +94,10 @@ def run_mvprediction(input_image: Image.Image, remove_bg=True, guidance_scale=1.
     return rgb_pils, single_image 
 
 
-checkpoint_path = "/media/mbzuai/Tingting/projects/unique3d-diffuser/ckpt/img2mvimg/unet_state_dict.pth"
+checkpoint_path = "ckpt/img2mvimg/unet_state_dict.pth"
 trainer, pipeline = build_model("img2mvimg", checkpoint_path)
  
-input_image = Image.open("image.png")
+input_image = Image.open("data/image.png")
 rgb_pils, single_image = run_mvprediction(input_image, remove_bg=True, guidance_scale=1.5, seed=1145)
 
 # concate images

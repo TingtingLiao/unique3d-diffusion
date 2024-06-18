@@ -23,7 +23,7 @@ python -m scripts.img2normal
 # upsampling 
 
 ```
-**Load the model**
+**Load model**
 ```bash 
 # img2mvimg 
 from unique3d_diffusion.model_zoo import build_model 
