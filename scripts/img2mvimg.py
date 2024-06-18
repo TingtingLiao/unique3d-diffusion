@@ -5,9 +5,16 @@ import os
 from rembg import remove, new_session
 
 from unique3d_diffusion.model_zoo import build_model 
- 
-
- 
+  
+providers = [
+    ('CUDAExecutionProvider', {
+        'device_id': 0,
+        'arena_extend_strategy': 'kSameAsRequested',
+        'gpu_mem_limit': 8 * 1024 * 1024 * 1024,
+        'cudnn_conv_algo_search': 'HEURISTIC',
+    })
+] 
+session = new_session(providers=providers) 
 
 def rgba_to_rgb(rgba: Image.Image, bkgd="WHITE"):
     new_image = Image.new("RGBA", rgba.size, bkgd)
@@ -63,16 +70,7 @@ def run_mvprediction(trainer, pipeline, image_path: str, remove_bg=True, guidanc
         print("RGB image not RGBA! still remove bg!")
         remove_bg = True
 
-    if remove_bg:
-        providers = [
-            ('CUDAExecutionProvider', {
-                'device_id': 0,
-                'arena_extend_strategy': 'kSameAsRequested',
-                'gpu_mem_limit': 8 * 1024 * 1024 * 1024,
-                'cudnn_conv_algo_search': 'HEURISTIC',
-            })
-        ] 
-        session = new_session(providers=providers) 
+    if remove_bg: 
         input_image = remove(input_image, session=session)
 
     # make front_pil RGBA with white bg
