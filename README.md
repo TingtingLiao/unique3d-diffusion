@@ -5,7 +5,7 @@ This project contains the image-to-multiview diffusion and image-to-normal diffu
 
 ## Install 
 ```bash 
-pip install git+https://github.com/TingtingLiao/unique3d-diffuser.git 
+pip install git+https://github.com/TingtingLiao/unique3d-diffusion.git 
 ```
 or 
 ```
