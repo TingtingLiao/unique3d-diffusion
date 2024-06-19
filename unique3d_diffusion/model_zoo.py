@@ -20,18 +20,15 @@ def init_trainers(cfg_path: str, weight_dtype: torch.dtype, extras: dict, ckpt_p
     accelerator = FakeAccelerator()
     cfg: ExprimentConfig = load_config(ExprimentConfig, cfg_path, extras)
 
-    if ckpt_path is not None:
+    if 'img2mvimg' in ckpt_path:
         cfg.pretrained_model_name_or_path = os.path.dirname(ckpt_path)
         cfg.init_config.init_unet_path = os.path.dirname(ckpt_path) 
         cfg.trainers[0].trainer.pretrained_model_name_or_path = os.path.dirname(ckpt_path) 
     
     init_config: AttnConfig = load_config(AttnConfig, cfg.init_config)  
     configurable_unet = ConfigurableUNet2DConditionModel(init_config, weight_dtype)
-     
     configurable_unet.enable_xformers_memory_efficient_attention()
-    
     trainer_cfgs: List[TrainerSubConfig] = [load_config(TrainerSubConfig, trainer) for trainer in cfg.trainers]
-     
     trainers: List[BasicTrainer] = [modules.find(trainer.trainer_type)(accelerator, None, configurable_unet, trainer.trainer, weight_dtype, i) for i, trainer in enumerate(trainer_cfgs)]
     return trainers, configurable_unet
 

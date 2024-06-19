@@ -15,7 +15,7 @@ pip install -e .
 ## Usage 
 ```bash
 # image to multi-view image 
-python3 -m scripts.img2mvimg --ckpt {path-to-img2mvimg-pth} --img "data/image.png" 
+python3 -m scripts.img2mvimg --ckpt "ckpt/img2mvimg/unet_state_dict.pth" --img "data/image.png" 
 
 # image to multi-view normal  
 python3 -m scripts.img2normal 
