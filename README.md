@@ -1,5 +1,5 @@
 # Unique3D Diffusion Models
-This project contains the diffusion models from 
+This project contains the image-to-multiview diffusion and image-to-normal diffusion models from [Unique3D](https://github.com/AiuniAI/Unique3D).
 ![demo](https://github.com/TingtingLiao/unique3d-diffuser/assets/45743512/960c1a21-7972-4ea2-924e-a387773f2d47)
 
 
@@ -25,7 +25,7 @@ python3 -m scripts.img2normal --ckpt "ckpt/image2normal/unet_state_dict.pth" --i
 
 ## Acknowledgement 
 
-The code is adapted from [unique3d](). Please consiter cite: 
+The code is adapted from [unique3d](https://github.com/AiuniAI/Unique3D). Please consiter cite: 
 ```
 @misc{wu2024unique3d,
       title={Unique3D: High-Quality and Efficient 3D Mesh Generation from a Single Image}, 
