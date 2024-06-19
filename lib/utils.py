@@ -1,8 +1,7 @@
 from PIL import Image
 import numpy as np
 import torch
-from rembg import new_session, remove
-from .refine_lr_to_sr import run_sr_fast
+from rembg import new_session, remove 
 
 providers = [
     ('CUDAExecutionProvider', {
@@ -66,24 +65,6 @@ def remove_color(arr):
     arr = np.concatenate([arr, alpha[..., None].astype(np.int32) * 255], axis=-1)
     return arr
 
-def simple_remove(imgs, run_sr=True):
-    """Only works for normal"""
-    if not isinstance(imgs, list):
-        imgs = [imgs]
-        single_input = True
-    else:
-        single_input = False
-    if run_sr:
-        # upsampling 
-        imgs = run_sr_fast(imgs)
-    rets = []
-    for img in imgs:
-        arr = np.array(img)
-        arr = remove_color(arr)
-        rets.append(Image.fromarray(arr.astype(np.uint8)))
-    if single_input:
-        return rets[0]
-    return rets
 
 def rgba_to_rgb(rgba: Image.Image, bkgd="WHITE"):
     new_image = Image.new("RGBA", rgba.size, bkgd)
