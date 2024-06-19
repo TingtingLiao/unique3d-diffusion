@@ -15,6 +15,7 @@ pip install -e .
 ```
 
 ## Usage 
+Download unique3d models from [huggingface](https://huggingface.co/spaces/Wuvin/Unique3D/tree/main/ckpt). 
 ```bash
 # image to multi-view image 
 python3 -m scripts.img2mvimg --ckpt "ckpt/img2mvimg/unet_state_dict.pth" --img "data/belle.jpeg" 
