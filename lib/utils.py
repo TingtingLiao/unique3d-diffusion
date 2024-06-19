@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 import torch
-from rembg import new_session
+from rembg import new_session, remove
 from .refine_lr_to_sr import run_sr_fast
 
 providers = [
