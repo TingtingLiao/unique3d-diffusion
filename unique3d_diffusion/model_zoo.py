@@ -62,8 +62,11 @@ def load_pipeline(config_path, ckpt_path, pipeline_filter=lambda x: True, weight
 
 def build_model(model_name="img2mvimg", ckpt_path=None): 
     if model_name == "img2mvimg": 
-        training_config = "unique3d_diffusion/configs/image2mvimage.yaml"
+        # get the directory of the ckpt_path
+        cur_dir = os.path.dirname(os.path.realpath(__file__))
+        
+        training_config = f"{cur_dir}/configs/image2mvimage.yaml"
         return load_pipeline(training_config, ckpt_path)
     elif model_name == "img2normal": 
-        training_config = "unique3d_diffusion/configs/image2normal.yaml" 
+        training_config = f"{cur_dir}/configs/image2normal.yaml" 
         return load_pipeline(training_config, ckpt_path)
