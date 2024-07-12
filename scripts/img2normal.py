@@ -42,6 +42,9 @@ if __name__ == "__main__":
     parser.add_argument("--img_dir", type=str, default="output/image/rgb", help="path to the image")
     args = parser.parse_args()
 
+    # if os.path.exists(f"{os.path.dirname(args.img_dir)}/normals.png"):
+    #     exit()
+
     trainer, pipeline = build_model("img2normal", args.ckpt) 
 
     onnx_path = os.path.dirname(os.path.dirname(args.ckpt)) + "/realesrgan-x4.onnx"
@@ -64,9 +67,9 @@ if __name__ == "__main__":
     for i, normal in enumerate(normal_pils):
         normal.save(f"{save_dir}/{i}.png")
     
-    # width, height = normal_pils[0].size  
-    # combined_image = Image.new('RGB', (width * len(normal_pils), height))
-    # for i, img in enumerate(normal_pils):
-    #     img = rgba_to_rgb(img, "white")
-    #     combined_image.paste(img, (i * width, 0))
-    # combined_image.save(f"{os.path.dirname(args.img_dir)}/normals.png")
+    width, height = normal_pils[0].size  
+    combined_image = Image.new('RGB', (width * len(normal_pils), height))
+    for i, img in enumerate(normal_pils):
+        img = rgba_to_rgb(img, "white")
+        combined_image.paste(img, (i * width, 0))
+    combined_image.save(f"{os.path.dirname(args.img_dir)}/normals.png")

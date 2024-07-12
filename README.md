@@ -20,6 +20,9 @@ Download unique3d models from [huggingface](https://huggingface.co/spaces/Wuvin/
 # image to multi-view image 
 python3 -m scripts.img2mvimg --ckpt "ckpt/img2mvimg/unet_state_dict.pth" --img "data/belle.jpeg" 
 
+# run all images in a dir 
+python3 -m scripts.img2mvimg --ckpt "ckpt/img2mvimg/unet_state_dict.pth" --img ./data
+
 # image to multi-view normal  
 python3 -m scripts.img2normal --ckpt "ckpt/image2normal/unet_state_dict.pth" --img_dir "output/belle/images"
 ```

@@ -35,7 +35,6 @@ def do_rotate(rgba_normal, angle):
     return rgba_normal_np
 
 
-
 def rotate_normals_torch(normal_pils, return_types='np', rotate_direction=1):
     n_views = len(normal_pils)
     ret = []
