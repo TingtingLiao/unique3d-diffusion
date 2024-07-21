@@ -17,14 +17,21 @@ pip install -e .
 ## Usage 
 Download unique3d models from [huggingface](https://huggingface.co/spaces/Wuvin/Unique3D/tree/main/ckpt). 
 ```bash
-# image to multi-view image 
-python3 -m scripts.img2mvimg --ckpt "ckpt/img2mvimg/unet_state_dict.pth" --img "data/belle.jpeg" 
+# single image 
+python3 demo.py --ckpt_dir ./ckpt --img data/disney/belle.jpeg 
 
-# run all images in a dir 
-python3 -m scripts.img2mvimg --ckpt "ckpt/img2mvimg/unet_state_dict.pth" --img ./data
+# processing img_dir  
+python3 demo.py --ckpt_dir ./ckpt --img_dir data/disney 
+```
+or 
+```bash 
+from unique3d_diffusion import Unique3dDiffuser
 
-# image to multi-view normal  
-python3 -m scripts.img2normal --ckpt "ckpt/image2normal/unet_state_dict.pth" --img_dir "output/belle/images"
+seed = 0 
+ckpt_dir = "./ckpt"
+save_dir = "./output"
+model = Unique3dDiffuser(ckpt_dir, args.seed, save_dir)
+model(args.img) 
 ```
 
 ## Acknowledgement 
