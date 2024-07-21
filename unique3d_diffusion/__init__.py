@@ -21,7 +21,7 @@ class Unique3dDiffuser(nn.Module):
         # generator seed 
         self.generator = torch.Generator(device="cuda").manual_seed(int(seed)) if seed >= 0 else None
 
-        self.mvimg_trainer, self.mvnml_pipeline = build_model("img2mvimg", f"{ckpt_dir}/img2mvimg/unet_state_dict.pth") 
+        self.mvimg_trainer, self.mvimg_pipeline = build_model("img2mvimg", f"{ckpt_dir}/img2mvimg/unet_state_dict.pth") 
         self.mvnml_trainer, self.mvnml_pipeline = build_model("img2normal", f"{ckpt_dir}/image2normal/unet_state_dict.pth") 
          
         # refine tile images 
@@ -50,7 +50,7 @@ class Unique3dDiffuser(nn.Module):
     def img2mvimg(self, front_image, refine=False, guidance_scale=1.5): 
         img = rgba_to_rgb(front_image) if front_image.mode == 'RGBA' else front_image
         rgb_pils = self.mvimg_trainer.pipeline_forward(
-            pipeline=self.mvnml_pipeline,
+            pipeline=self.mvimg_pipeline,
             image=img,
             guidance_scale=guidance_scale, 
             generator=self.generator,
@@ -131,7 +131,7 @@ class Unique3dDiffuser(nn.Module):
         if front_pil.size[0] <= 512:
             front_pil = self.run_sr_fast([front_pil])[0] 
         img_list = [front_pil] + self.run_sr_fast(rgb_pils[1:])
-
+        
         print('predicting normal maps...')  
         mv_normals = self.img2normal([img.resize((512, 512), resample=Image.LANCZOS) for img in img_list], guidance_scale=1.5)
 
@@ -143,16 +143,16 @@ class Unique3dDiffuser(nn.Module):
                 ], axis=-1)
         ) 
         # transfer the alpha channel of mv_normals to img_list
-        for idx, img in enumerate(img_list):
+        for idx, (img, nml) in enumerate(zip(img_list, mv_normals)):
             if idx > 0: 
-                img_list[idx] = Image.fromarray(np.concatenate([np.array(img_list[idx]), np.array(img)[:, :, 3:4]], axis=-1))
+                img_list[idx] = Image.fromarray(np.concatenate([np.array(img), np.array(nml)[:, :, 3:4]], axis=-1))
         assert img_list[0].mode == "RGBA"
         assert np.mean(np.array(img_list[0])[..., 3]) < 250
         
         img_list = [img_list[0]] + erode_alpha(img_list[1:])
-        
-        # save img_list and mv_normals
+         
         if save:
+            print(f"saving images to {self.save_dir}/{im_name}")
             normal_dir = os.path.join(self.save_dir, im_name, "normals")
             image_dir = os.path.join(self.save_dir, im_name, "images")
             os.makedirs(normal_dir, exist_ok=True)
