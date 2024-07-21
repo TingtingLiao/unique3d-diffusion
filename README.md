@@ -30,8 +30,9 @@ from unique3d_diffusion import Unique3dDiffuser
 seed = 0 
 ckpt_dir = "./ckpt"
 save_dir = "./output"
+image_path = "data/disney/belle.jpeg" 
 model = Unique3dDiffuser(ckpt_dir, seed, save_dir)
-images, normals = model(args.img, save=True) 
+images, normals = model(image_path, save=True) 
 ```
 
 ## Acknowledgement 
