@@ -30,8 +30,8 @@ from unique3d_diffusion import Unique3dDiffuser
 seed = 0 
 ckpt_dir = "./ckpt"
 save_dir = "./output"
-model = Unique3dDiffuser(ckpt_dir, args.seed, save_dir)
-model(args.img) 
+model = Unique3dDiffuser(ckpt_dir, seed, save_dir)
+images, normals = model(args.img, save=True) 
 ```
 
 ## Acknowledgement 
