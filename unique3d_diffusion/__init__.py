@@ -29,7 +29,7 @@ class Unique3dDiffuser(nn.Module):
             base_model="runwayml/stable-diffusion-v1-5", 
             ip_adapter=True, 
             plus_model=False, 
-            controlnet="ckpt/controlnet-tile", 
+            controlnet=f"{ckpt_dir}/controlnet-tile", 
             pipeline_class=StableDiffusionControlNetImg2ImgPipeline
         ) 
         self.neg_prompt_list = ["sketch, sculpture, hand drawing, outline, single color, NSFW, lowres, bad anatomy,bad hands, text, error, missing fingers, yellow sleeves, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry,(worst quality:1.4),(low quality:1.4)"]
@@ -38,7 +38,7 @@ class Unique3dDiffuser(nn.Module):
         # upsampler
         self.upsampler = RealESRGANer(
             scale=4,
-            onnx_path="ckpt/realesrgan-x4.onnx",
+            onnx_path=f"{ckpt_dir}/realesrgan-x4.onnx",
             tile=0,
             tile_pad=10,
             pre_pad=0,
