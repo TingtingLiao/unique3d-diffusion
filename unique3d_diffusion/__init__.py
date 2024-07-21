@@ -143,7 +143,7 @@ class Unique3dDiffuser(nn.Module):
                 ], axis=-1)
         ) 
         # transfer the alpha channel of mv_normals to img_list
-        for idx, img in enumerate(mv_normals):
+        for idx, img in enumerate(img_list):
             if idx > 0: 
                 img_list[idx] = Image.fromarray(np.concatenate([np.array(img_list[idx]), np.array(img)[:, :, 3:4]], axis=-1))
         assert img_list[0].mode == "RGBA"
