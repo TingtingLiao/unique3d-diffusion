@@ -21,8 +21,10 @@ if __name__ == "__main__":
     model = Unique3dDiffuser(args.ckpt_dir, args.seed, save_dir="output")
     if args.img_dir is not None:  
         for im_file in sorted(os.listdir(args.img_dir)):
-            model(os.path.join(args.img_dir, im_file))
+            image = model.load_image(os.path.join(args.img_dir, im_file))
+            model(image)
     else:
-        model(args.img)
- 
+        image = model.load_image(args.img)
+        model(image)
+    
     

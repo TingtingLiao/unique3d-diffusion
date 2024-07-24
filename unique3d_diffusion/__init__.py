@@ -122,9 +122,8 @@ class Unique3dDiffuser(nn.Module):
             images = rotate_normals_torch(images, return_types='pil')
         return images
 
-    def forward(self, im_path, remove_bg=False, save=False):
-        im_name = os.path.basename(im_path).split(".")[0]  
-        front_pil = self.load_image(im_path)
+    def forward(self, front_pil, remove_bg=False, save=False):
+        im_name = os.path.basename(im_path).split(".")[0]   
         rgb_pils = self.img2mvimg(front_pil, refine=True)
 
         # upscale rgbs
