@@ -122,8 +122,7 @@ class Unique3dDiffuser(nn.Module):
             images = rotate_normals_torch(images, return_types='pil')
         return images
 
-    def forward(self, front_pil, remove_bg=False, save=False):
-        im_name = os.path.basename(im_path).split(".")[0]   
+    def forward(self, front_pil, remove_bg=False, save=False):  
         rgb_pils = self.img2mvimg(front_pil, refine=True)
 
         # upscale rgbs
@@ -151,9 +150,9 @@ class Unique3dDiffuser(nn.Module):
         img_list = [img_list[0]] + erode_alpha(img_list[1:])
          
         if save:
-            print(f"saving images to {self.save_dir}/{im_name}")
-            normal_dir = os.path.join(self.save_dir, im_name, "normals")
-            image_dir = os.path.join(self.save_dir, im_name, "images")
+            print(f"saving images to {self.save_dir}/")
+            normal_dir = os.path.join(self.save_dir, "normals")
+            image_dir = os.path.join(self.save_dir, "images")
             os.makedirs(normal_dir, exist_ok=True)
             os.makedirs(image_dir, exist_ok=True)
             for i, (img, normal) in enumerate(zip(img_list, mv_normals)):
