@@ -18,13 +18,13 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, default=-1, help="random seed") 
     args = parser.parse_args()
 
-    model = Unique3dDiffuser(args.ckpt_dir, args.seed, save_dir="output")
+    model = Unique3dDiffuser(args.ckpt_dir, args.seed)
     if args.img_dir is not None:  
         for im_file in sorted(os.listdir(args.img_dir)):
             image = model.load_image(os.path.join(args.img_dir, im_file))
-            model(image)
+            model(image, save_dir="output")
     else:
         image = model.load_image(args.img)
-        model(image)
+        model(image, save_dir="output")
     
     
