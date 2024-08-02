@@ -14,9 +14,8 @@ from .lib.upsampler import RealESRGANer
  
 
 class Unique3dDiffuser(nn.Module):
-    def __init__(self, ckpt_dir, seed, save_dir):
+    def __init__(self, ckpt_dir, seed):
         super(Unique3dDiffuser, self).__init__()
-        self.save_dir = save_dir
           
         # generator seed 
         self.generator = torch.Generator(device="cuda").manual_seed(int(seed)) if seed >= 0 else None
@@ -122,7 +121,7 @@ class Unique3dDiffuser(nn.Module):
             images = rotate_normals_torch(images, return_types='pil')
         return images
 
-    def forward(self, front_pil, remove_bg=False, save=False):  
+    def forward(self, front_pil, remove_bg=False, save_dir=None):  
         rgb_pils = self.img2mvimg(front_pil, refine=True)
 
         # upscale rgbs
@@ -149,10 +148,11 @@ class Unique3dDiffuser(nn.Module):
         
         img_list = [img_list[0]] + erode_alpha(img_list[1:])
          
-        if save:
-            print(f"saving images to {self.save_dir}/")
-            normal_dir = os.path.join(self.save_dir, "normals")
-            image_dir = os.path.join(self.save_dir, "images")
+        if save_dir is not None:
+            os.makedirs(save_dir, exist_ok=True)
+            print(f"saving images to {save_dir}/")
+            normal_dir = os.path.join(save_dir, "normals")
+            image_dir = os.path.join(save_dir, "images")
             os.makedirs(normal_dir, exist_ok=True)
             os.makedirs(image_dir, exist_ok=True)
             for i, (img, normal) in enumerate(zip(img_list, mv_normals)):

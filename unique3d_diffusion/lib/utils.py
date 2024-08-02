@@ -108,7 +108,7 @@ def simple_preprocess(input_image, rembg_session=session, background_color=255):
     y_max = int(y_nonzero[0].max())
     arr = arr[x_min: x_max, y_min: y_max]
     input_image = Image.fromarray(arr)
-    # input_image = expand2square(input_image, (background_color, background_color, background_color, 0))
+    input_image = expand2square(input_image, (background_color, background_color, background_color, 0))
     return input_image
 
 
